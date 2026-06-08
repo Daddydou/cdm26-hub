@@ -19,6 +19,7 @@ export default function LeaguePage() {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
+      console.log('[league/page] getUser →', { userId: user?.id, email: user?.email })
       if (!user) { router.push('/fantasy'); return }
 
       const { data: lg } = await supabase
@@ -28,6 +29,7 @@ export default function LeaguePage() {
         .single()
 
       if (!lg) { router.push('/fantasy'); return }
+      console.log('[league/page] admin_user_id in DB:', lg.admin_user_id, '| match:', lg.admin_user_id === user.id)
       setLeague(lg)
       setIsAdmin(lg.admin_user_id === user.id)
 

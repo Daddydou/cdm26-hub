@@ -25,11 +25,17 @@ export default function HomePage() {
         const authCode = params.get('__auth_code')
         if (authCode) {
           window.history.replaceState({}, '', '/fantasy')
-          await supabase.auth.exchangeCodeForSession(decodeURIComponent(authCode))
+          const { data: exchangeData, error: exchangeErr } = await supabase.auth.exchangeCodeForSession(decodeURIComponent(authCode))
+          console.log('[magic-link] exchangeCodeForSession →', {
+            userId:  exchangeData?.user?.id,
+            email:   exchangeData?.user?.email,
+            error:   exchangeErr?.message,
+          })
         }
 
         // 1. Session Supabase valide (anon persisté ou admin magic link)
         const { data: { session } } = await supabase.auth.getSession()
+        console.log('[fantasy/page] getSession →', { userId: session?.user?.id, email: session?.user?.email })
         if (session) {
           const { data: p } = await supabase
             .from('fantasy_participants')
