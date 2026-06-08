@@ -20,6 +20,14 @@ export default function HomePage() {
   useEffect(() => {
     async function tryAutoLogin() {
       try {
+        // 0. Magic link callback — échange le code côté client pour persister en localStorage
+        const params = new URLSearchParams(window.location.search)
+        const authCode = params.get('__auth_code')
+        if (authCode) {
+          window.history.replaceState({}, '', '/fantasy')
+          await supabase.auth.exchangeCodeForSession(decodeURIComponent(authCode))
+        }
+
         // 1. Session Supabase valide (anon persisté ou admin magic link)
         const { data: { session } } = await supabase.auth.getSession()
         if (session) {

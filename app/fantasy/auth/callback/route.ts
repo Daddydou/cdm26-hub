@@ -1,19 +1,21 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function GET(request: NextRequest) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
+  const { searchParams } = new URL(request.url)
+  const code  = searchParams.get('code')
+  const error = searchParams.get('error')
 
-  if (code) {
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-    await supabase.auth.exchangeCodeForSession(code)
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin
+
+  if (error) {
+    return NextResponse.redirect(`${base}/fantasy/admin-login?error=lien_invalide`)
   }
 
-  // Rediriger vers l'accueil — la page gère ensuite l'auto-login
-  return NextResponse.redirect(`${origin}/`)
+  if (code) {
+    // Pass code to client so it can exchange it and store the session in localStorage
+    return NextResponse.redirect(`${base}/fantasy?__auth_code=${encodeURIComponent(code)}`)
+  }
+
+  return NextResponse.redirect(`${base}/fantasy`)
 }

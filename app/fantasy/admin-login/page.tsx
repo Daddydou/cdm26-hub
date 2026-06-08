@@ -20,7 +20,7 @@ export default function AdminLoginPage() {
         email: ADMIN_EMAIL,
         options: {
           shouldCreateUser: false,
-          emailRedirectTo: `${window.location.origin}/fantasy/auth/callback`,
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin}/fantasy/auth/callback`,
         },
       })
       if (error) throw error
