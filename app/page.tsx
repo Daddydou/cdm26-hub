@@ -48,6 +48,10 @@ export default function HubPage() {
           </div>
         </a>
       </div>
+
+      <a href="/fantasy/admin-login" className="mt-12 text-xs text-zinc-700 hover:text-zinc-500 transition-colors">
+        Admin
+      </a>
     </main>
   )
 }
